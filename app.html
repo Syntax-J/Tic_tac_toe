@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	.cir{
+		padding: 40px;
+		position: absolute;
+		border-radius: 50%;
+		border:5px solid white;
+	}
+	.cus{
+		padding: 40px;
+		position: absolute;
+		border-radius: 50%;
+		border:5px solid red;
+	}
+	.winbox{
+		font-size: 16px;
+		padding: 10px;
+		background: white;
+		border-radius: 15px;
+		border:5px dotted pink;
+		color:#655;
+		font-weight: bolder;
+
+	}
+	.reg{
+		padding: 5px;
+		margin: 5px;
+		background: yellowgreen;
+		border: none;
+		color:white;
+		border-radius: 15px;
+	}
+	</style>
+</head>
+<script src="./vue.js"></script>
+<body>
+<div id="app" v-bind:style='divStyle' >
+	<div v-show='seen' v-if='win==1' class="winbox">Player 1 win the game!<button class="reg" @click="replay">Replay?</button></div>
+	<div v-show='seen' v-else-if='win==2' class="winbox" >Player 2 win the game!<button class="reg" @click="replay">Replay?</button></div>
+	<div v-show='seen' v-else-if='win==0' class="winbox" >Noone win the game!<button class="reg" @click="replay">Replay?</button></div>
+	<cuz v-for="(i,index) in 9" v-bind:style='styleObject' v-bind:key=index v-bind:child_flag="flag" v-bind:ind=index v-on:change="dadchange">
+	</cuz>
+</div>
+</body>
+<script>
+	Vue.component('cuz',{
+		props:['child_flag','ind'],
+		template:'<div @click="go"><span v-bind:class="classObj" ></span></div>',
+		
+		data:function(){
+			return {
+				did:0,
+				classObj:{
+					cir:false,
+					cus:false
+				},
+			}
+		},
+		methods:{
+			go:function(){
+			
+				 if(this.did==0){
+				 	if(this.child_flag==false){
+				 		this.classObj.cir=!this.classObj.cir
+				 		this.did=1;
+				 	}else{
+				 		this.classObj.cus=!this.classObj.cus
+				 		this.did=2;
+				 	}
+
+				 }else{
+				 	this.$emit('change');
+				 		console.log('did')
+				 	}
+					
+							if((this.$parent.$children[0].did==1 && this.$parent.$children[3].did==1 
+									&& this.$parent.$children[6].did==1)||
+								(this.$parent.$children[1].did==1 && this.$parent.$children[4].did==1 && this.$parent.$children[7].did==1)||
+								(this.$parent.$children[2].did==1 && this.$parent.$children[5].did==1 && this.$parent.$children[8].did==1)||
+								(this.$parent.$children[0].did==1 && this.$parent.$children[1].did==1 && this.$parent.$children[2].did==1)||
+								(this.$parent.$children[3].did==1 && this.$parent.$children[4].did==1 && this.$parent.$children[5].did==1)||
+								(this.$parent.$children[6].did==1 && this.$parent.$children[7].did==1 && this.$parent.$children[8].did==1)||
+								(this.$parent.$children[0].did==1 && this.$parent.$children[4].did==1 && this.$parent.$children[8].did==1)||
+								(this.$parent.$children[2].did==1 && this.$parent.$children[4].did==1 && this.$parent.$children[6].did==1))
+							{
+								app.win=1;
+								app.seen=true;
+								console.log('player 1 win');
+							}else{
+								if((this.$parent.$children[0].did==2 && this.$parent.$children[3].did==2 
+									&& this.$parent.$children[6].did==2)||
+								(this.$parent.$children[1].did==2 && this.$parent.$children[4].did==2 && this.$parent.$children[7].did==2)||
+								(this.$parent.$children[2].did==2 && this.$parent.$children[5].did==2 && this.$parent.$children[8].did==2)||
+								(this.$parent.$children[0].did==2 && this.$parent.$children[1].did==2 && this.$parent.$children[2].did==2)||
+								(this.$parent.$children[3].did==2 && this.$parent.$children[4].did==2 && this.$parent.$children[5].did==2)||
+								(this.$parent.$children[6].did==2 && this.$parent.$children[7].did==2 && this.$parent.$children[8].did==2)||
+								(this.$parent.$children[0].did==2 && this.$parent.$children[4].did==2 && this.$parent.$children[8].did==2)||
+								(this.$parent.$children[2].did==2 && this.$parent.$children[4].did==2 && this.$parent.$children[6].did==2))
+							{
+								app.win=2;
+								app.seen=true;
+								console.log('player 2 win');
+								}else{
+									if( this.$parent.$children[0].did!=0&&
+									this.$parent.$children[1].did!=0&&
+									this.$parent.$children[2].did!=0&&
+									this.$parent.$children[3].did!=0&&
+									this.$parent.$children[4].did!=0&&
+									this.$parent.$children[5].did!=0&&
+									this.$parent.$children[6].did!=0&&
+									this.$parent.$children[7].did!=0&&
+									this.$parent.$children[8].did!=0
+									){
+										app.win=0;
+										app.seen=true;
+										console.log('Noone win');
+									}
+								}
+							}
+							
+							
+						
+				 	this.$emit('change');
+				 	
+				 	
+			}
+		}
+	})
+var app=new Vue({
+	el:'#app',
+	data:{
+		seen:false,
+		win:'',
+		flag:false,
+		divStyle:{
+			fontSize:0,
+			margin:'20px',
+			width:'300px',
+			height:'300px'
+		},
+		smallObject:{
+
+		},
+		styleObject:{
+			display:'inline-block',
+			color:'white',
+			width:'90px',
+			height:'90px',
+			background:'orange',
+			border:'5px solid rgb(62,157,244)'
+		}
+	},
+	methods:{
+		dadchange:function(){
+			this.flag=!this.flag;
+
+		},
+		replay:function(){
+			location.reload();
+		}
+	}
+})
+</script>
+</html>
+
+
+
+
+				 				
